@@ -19,10 +19,12 @@ background.src = 'https://user-images.githubusercontent.com/18351809/46888871-62
 let x = 100;
 let y = 100;
 
+let pipes = []
+
 let gameOver = false;
 
 let gravity = 3;
-let jumpPower = 6;
+let jumpPower = 5;
 let isJumping = false;
 
 let time = 0;
@@ -30,17 +32,30 @@ let time = 0;
 function gameLoop() {
     if (!gameOver) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        y += gravity
+        y += gravity;
         drawBackground();
+        updatepipes();
+        drawPipes();
         drawBird();
-        requestAnimationFrame(gameLoop)
+        requestAnimationFrame(gameLoop);
+    } else {
+        clearInterval(pipesspawning);
+        pipesspawning = null;
     }
 }
 
 gameLoop()
 
+let pipesspawning;
+
+spawnpipes();
+
+pipesspawning = setInterval(() => {
+    spawnpipes();
+}, 2500)
+
 function drawBird() {
-    ctx.drawImage(bird, x, y, 170, 100);
+    ctx.drawImage(bird, x, y, 140, 80);
 }
 
 function drawBackground() {
@@ -74,3 +89,42 @@ document.addEventListener('keyup', function(event) {
             isJumping = false;
     }
 });
+
+function updatepipes() {
+    for (let i = 0; i < pipes.length; i++) {
+        pipes[i].x -= 2
+
+        if (pipes[i].x + 100 < 0) {
+            pipes.splice(i, 1);
+            i--;
+        }
+    }
+}
+
+function spawnpipes() {
+    let pipeheightArray = [100, 200, 400];
+    let pipeheightIndex = Math.floor(Math.random() * pipeheightArray.length);
+
+    let pipe = {
+        top: pipeheightArray[pipeheightIndex],
+        bottom: pipeheightArray[pipeheightIndex],
+        x: canvas.width
+    };
+    pipes.push(pipe);
+}
+
+function drawPipes() {
+    ctx.fillStyle = 'green';
+    pipes.forEach(pipe => {
+        if (pipe.top === 200) {
+            pipe.bottom = -200;
+        } else if (pipe.top === 400) {
+            pipe.top = 350;
+            pipe.bottom =  -100
+        } else if (pipe.top === 100) {
+            pipe.bottom = -350
+        }
+        ctx.fillRect(pipe.x, 0, 100, pipe.top);
+        ctx.fillRect(pipe.x, canvas.height, 100, pipe.bottom);
+    });
+}
