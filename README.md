@@ -1,2 +1,3 @@
 # flappybird
-A basic recreation of flappy bird but on the web
+A recreation of flappy bird but in the web
+If you dont know what flappy bird is click <a href="https://en.wikipedia.org/wiki/Flappy_Bird">Here</a>
