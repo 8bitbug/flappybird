@@ -27,6 +27,8 @@ let gravity = 3;
 let jumpPower = 5;
 let isJumping = false;
 
+let points = 0;
+
 let time = 0;
 
 let canvasClickHandler;
@@ -42,6 +44,7 @@ function gameLoop() {
         drawBird();
         checkCollision();
         IsGameOver();
+        gainPoints();
         startGameButton = null;
         requestAnimationFrame(gameLoop);
     } else {
@@ -87,10 +90,18 @@ function checkCollision() {
         if (
             x + 140 >= pipe.x &&
             x <= pipe.x + 100 &&
-            (y <= pipe.top || y + 80 >= canvas.height - pipe.bottom)
+            (y <= pipe.top || y + 80 >= canvas.height - (pipe.bottom - pipe.bottom - pipe.bottom - 1))
         ) {
             gameOver = true;
             return;
+        }
+    }
+}
+
+function gainPoints() {
+    for (let i = 0; i < pipes.length; i++) {
+        if (x == pipes[i].x) {
+            points += 1;
         }
     }
 }
@@ -205,7 +216,10 @@ function gameOverScreen() {
     ctx.font = '30px sans-serif';
     ctx.fillText('Restart', (canvas.width / 2 - (canvas.width / 6.2)) * 1.345, (canvas.height / 2 - (canvas.height / Math.PI) + Math.PI * 2) * 3.77);
     ctx.font = '50px lora';
-    ctx.fillText('Game Over',  (canvas.width / 2 - (canvas.width / 6.2)) * 1.22,  (canvas.height / 2 - (canvas.height / Math.PI) + Math.PI * 2) * 1.7)
+    ctx.fillText('Game Over',  (canvas.width / 2 - (canvas.width / 6.2)) * 1.22,  (canvas.height / 2 - (canvas.height / Math.PI) + Math.PI * 2) * 1.7);
+    ctx.fillStyle = 'gold'
+    ctx.font = '35px sans';
+    ctx.fillText(points + ' Points', (canvas.width / 2 - (canvas.width / 6.2)) * 1.33333, (canvas.height / 2 - (canvas.height / Math.PI) + Math.PI * 2) * 2.01)
 }
 
 function restartGame() {
@@ -217,6 +231,7 @@ function restartGame() {
     jumpPower = 5;
     isJumping = false;
     time = 0;
+    points = 0;
     gameLoop()
     clearInterval(pipesspawning);
     spawnpipes();
